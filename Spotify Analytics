@@ -57,6 +57,17 @@ limit 10
 select round(avg(tempo)),
 case when popularity >= 90 then "most popular"
 when popularity >=70 then "less popular"
+
+--Using a CTE, calulate the average popularity for the artists. Then, for every artist with an average popularity of 90 or above, show thier name, their average popularity, and label them as a "Top Star"--
+with popularity_average_CTE as (
+select s.artist_name, avg(s.popularity) as average_popularity
+from spotifydata s
+group by s.artist_name
+)
+
+select artist_name, average_popularity, 'Top Star' as tag
+from popularity_average_CTE
+where average_popularity >= 90;
 else "least popular" end as "popularity_tempo"
 from BIT_DB.spotifydata
 group by popularity_tempo;
